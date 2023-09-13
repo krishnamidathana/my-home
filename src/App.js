@@ -18,7 +18,7 @@ function App() {
           <Route path="/addbills" element={<Addbills />} />
 
           <Route path="/addestimate" element={<Addestimate />} />
-          <Route element={<Viewbills />} />
+          <Route path="*" element={<Viewbills />} />
         </Routes>
       </div>
     </BrowserRouter>
