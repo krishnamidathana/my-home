@@ -6,6 +6,12 @@
   height: 40vmin;
   pointer-events: none;
 }
+* {
+  list-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -35,4 +41,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }

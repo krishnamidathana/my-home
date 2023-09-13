@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Addbills from "./pages/Addbills";
+import Addestimate from "./pages/Addestimate";
+import Navbar from "./components/Navbar";
+
+import Viewbills from "./pages/Viewbills";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Viewbills />} />
+          <Route path="/dashboard" element={<Viewbills />} />
+          <Route path="/addbills" element={<Addbills />} />
+
+          <Route path="/addestimate" element={<Addestimate />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
