@@ -13,7 +13,7 @@ function App() {
       <Navbar />
       <div className="App">
         <Routes>
-          <Route path="/" element={<Viewbills />} />
+          <Route path="/my-home" element={<Viewbills />} />
           <Route path="/dashboard" element={<Viewbills />} />
           <Route path="/addbills" element={<Addbills />} />
 
