@@ -76,8 +76,12 @@ const Addbills = () => {
             <option value="MEAT">MEAT</option>
             <option value="OTHERS">OTHER</option>
           </select>
+          <label className="text-start pl-[90px] mt-4 font-bold" for="date">
+            Enter Date
+          </label>
           <input
             className="mx-auto w-[60%] px-2 py-3 mt-4 rounded-md  font-bold  "
+            id="date"
             type="date"
             name="date"
             onChange={(e) => setData({ ...data, date: e.target.value })}

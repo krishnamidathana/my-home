@@ -367,7 +367,7 @@ const Viewbills = () => {
       <div className="h-[1300px]  bg-black">
         {/* card display */}
         <div className="flex flex-row gap-[80px] justify-center pb-[100px] pt-[140px]">
-          <div className="w-[350px] p-1  h-[150px] bg-red-300 font-bold lg:text-xl rounded-xl shadow-2xl shadow-yellow-300/50">
+          <div className="w-[350px] p-1 h-[150px] bg-yellow-300 font-bold text-xl rounded-xl shadow-2xl shadow-yellow-300/50">
             <h1 className="pt-[40px] text-[50px] font-medium">
               <CountUp
                 end={totals.addOverAllAmount || 0}
