@@ -13,11 +13,12 @@ function App() {
       <Navbar />
       <div className="App">
         <Routes>
-          <Route path="/my-home" element={<Viewbills />} />
+          <Route path="/" element={<Viewbills />} />
           <Route path="/dashboard" element={<Viewbills />} />
           <Route path="/addbills" element={<Addbills />} />
 
           <Route path="/addestimate" element={<Addestimate />} />
+          <Route element={<Viewbills />} />
         </Routes>
       </div>
     </BrowserRouter>
