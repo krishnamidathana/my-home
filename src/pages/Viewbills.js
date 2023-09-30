@@ -276,7 +276,9 @@ const Viewbills = () => {
     if (kirana.length === 0) {
       alert("No items to delete");
     } else {
-      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      const shouldDelete = window.confirm(
+        "Are you sure ,want to delete all items?"
+      );
       if (shouldDelete) {
         const arr = [];
 
@@ -300,7 +302,9 @@ const Viewbills = () => {
     if (vegetables.length === 0) {
       alert("No items to delete");
     } else {
-      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      const shouldDelete = window.confirm(
+        "Are you sure ,want to delete all items?"
+      );
       if (shouldDelete) {
         const arr = [];
 
@@ -324,7 +328,9 @@ const Viewbills = () => {
     if (milk.length === 0) {
       alert("No items to delete");
     } else {
-      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      const shouldDelete = window.confirm(
+        "Are you sure ,want to delete all items?"
+      );
       if (shouldDelete) {
         const arr = [];
 
@@ -348,7 +354,9 @@ const Viewbills = () => {
     if (meat.length === 0) {
       alert("No items to delete");
     } else {
-      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      const shouldDelete = window.confirm(
+        "Are you sure ,want to delete all items?"
+      );
       if (shouldDelete) {
         const arr = [];
 
@@ -372,7 +380,9 @@ const Viewbills = () => {
     if (others.length === 0) {
       alert("No items to delete");
     } else {
-      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      const shouldDelete = window.confirm(
+        "Are you sure ,want to delete all items?"
+      );
       if (shouldDelete) {
         const arr = [];
 
