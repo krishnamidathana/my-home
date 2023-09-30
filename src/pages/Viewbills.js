@@ -191,67 +191,82 @@ const Viewbills = () => {
   }, []);
 
   const deletekiranaCell = async (deleteId) => {
+    const shouldDelete = window.confirm("Are you sure , want to delete?");
     try {
-      const datacollectionRef = collection(db, "KIRANA");
-      const ref = doc(datacollectionRef, deleteId);
-      await deleteDoc(ref);
-      const kiranaFilterData = kirana.filter((item) => item.id !== deleteId);
-      setKirana(kiranaFilterData);
-      alert("Deleted Successfully");
+      if (shouldDelete) {
+        const datacollectionRef = collection(db, "KIRANA");
+        const ref = doc(datacollectionRef, deleteId);
+        await deleteDoc(ref);
+        const kiranaFilterData = kirana.filter((item) => item.id !== deleteId);
+        setKirana(kiranaFilterData);
+        alert("Deleted Successfully");
+      }
     } catch (error) {
       alert("an error occured");
     }
   };
 
   const deletevegetablesCell = async (deleteId) => {
+    const shouldDelete = window.confirm("Are you sure , want to delete?");
     try {
-      const datacollectionRef = collection(db, "VEGETABLES");
-      const ref = doc(datacollectionRef, deleteId);
-      await deleteDoc(ref);
-      const vegetablesFilterData = vegetables.filter(
-        (item) => item.id !== deleteId
-      );
-      setVegetables(vegetablesFilterData);
-      alert("Deleted Successfully");
+      if (shouldDelete) {
+        const datacollectionRef = collection(db, "VEGETABLES");
+        const ref = doc(datacollectionRef, deleteId);
+        await deleteDoc(ref);
+        const vegetablesFilterData = vegetables.filter(
+          (item) => item.id !== deleteId
+        );
+        setVegetables(vegetablesFilterData);
+        alert("Deleted Successfully");
+      }
     } catch (error) {
       alert("an error occured");
     }
   };
 
   const deletemilkCell = async (deleteId) => {
+    const shouldDelete = window.confirm("Are you sure , want to delete ?");
     try {
-      const datacollectionRef = collection(db, "MILK");
-      const ref = doc(datacollectionRef, deleteId);
-      await deleteDoc(ref);
-      const milkFilterData = milk.filter((item) => item.id !== deleteId);
-      setMilk(milkFilterData);
-      alert("Deleted Successfully");
+      if (shouldDelete) {
+        const datacollectionRef = collection(db, "MILK");
+        const ref = doc(datacollectionRef, deleteId);
+        await deleteDoc(ref);
+        const milkFilterData = milk.filter((item) => item.id !== deleteId);
+        setMilk(milkFilterData);
+        alert("Deleted Successfully");
+      }
     } catch (error) {
       alert("an error occured");
     }
   };
 
   const deletemeatCell = async (deleteId) => {
+    const shouldDelete = window.confirm("Are you sure ,u want to delete ?");
     try {
-      const datacollectionRef = collection(db, "MEAT");
-      const ref = doc(datacollectionRef, deleteId);
-      await deleteDoc(ref);
-      const meatFilterData = meat.filter((item) => item.id !== deleteId);
-      setMeat(meatFilterData);
-      alert("Deleted Successfully");
+      if (shouldDelete) {
+        const datacollectionRef = collection(db, "MEAT");
+        const ref = doc(datacollectionRef, deleteId);
+        await deleteDoc(ref);
+        const meatFilterData = meat.filter((item) => item.id !== deleteId);
+        setMeat(meatFilterData);
+        alert("Deleted Successfully");
+      }
     } catch (error) {
       alert("an error occured");
     }
   };
 
   const deleteothersCell = async (deleteId) => {
+    const shouldDelete = window.confirm("Are you sure , want to delete ?");
     try {
-      const datacollectionRef = collection(db, "OTHERS");
-      const ref = doc(datacollectionRef, deleteId);
-      await deleteDoc(ref);
-      const othersFilterData = others.filter((item) => item.id !== deleteId);
-      setOthers(othersFilterData);
-      alert("Deleted Successfully");
+      if (shouldDelete) {
+        const datacollectionRef = collection(db, "OTHERS");
+        const ref = doc(datacollectionRef, deleteId);
+        await deleteDoc(ref);
+        const othersFilterData = others.filter((item) => item.id !== deleteId);
+        setOthers(othersFilterData);
+        alert("Deleted Successfully");
+      }
     } catch (error) {
       alert("an error occured");
     }
@@ -261,20 +276,23 @@ const Viewbills = () => {
     if (kirana.length === 0) {
       alert("No items to delete");
     } else {
-      const arr = [];
+      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      if (shouldDelete) {
+        const arr = [];
 
-      kirana.map((item) => {
-        return arr.push(item.id);
-      });
+        kirana.map((item) => {
+          return arr.push(item.id);
+        });
 
-      arr.map((ii) => {
-        const datacollectionRef = collection(db, "KIRANA");
-        const ref = doc(datacollectionRef, ii);
-        deleteDoc(ref);
-        const filterData = others.filter((item) => item.id === ii);
-        return setKirana(filterData);
-      });
-      alert("Deleted Successfully");
+        arr.map((ii) => {
+          const datacollectionRef = collection(db, "KIRANA");
+          const ref = doc(datacollectionRef, ii);
+          deleteDoc(ref);
+          const filterData = others.filter((item) => item.id === ii);
+          return setKirana(filterData);
+        });
+        alert("Deleted Successfully");
+      }
     }
   };
 
@@ -282,20 +300,23 @@ const Viewbills = () => {
     if (vegetables.length === 0) {
       alert("No items to delete");
     } else {
-      const arr = [];
+      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      if (shouldDelete) {
+        const arr = [];
 
-      vegetables.map((item) => {
-        return arr.push(item.id);
-      });
+        vegetables.map((item) => {
+          return arr.push(item.id);
+        });
 
-      arr.map((ii) => {
-        const datacollectionRef = collection(db, "VEGETABLES");
-        const ref = doc(datacollectionRef, ii);
-        deleteDoc(ref);
-        const filterData = others.filter((item) => item.id === ii);
-        return setVegetables(filterData);
-      });
-      alert("Deleted Successfully");
+        arr.map((ii) => {
+          const datacollectionRef = collection(db, "VEGETABLES");
+          const ref = doc(datacollectionRef, ii);
+          deleteDoc(ref);
+          const filterData = others.filter((item) => item.id === ii);
+          return setVegetables(filterData);
+        });
+        alert("Deleted Successfully");
+      }
     }
   };
 
@@ -303,20 +324,23 @@ const Viewbills = () => {
     if (milk.length === 0) {
       alert("No items to delete");
     } else {
-      const arr = [];
+      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      if (shouldDelete) {
+        const arr = [];
 
-      milk.map((item) => {
-        return arr.push(item.id);
-      });
+        milk.map((item) => {
+          return arr.push(item.id);
+        });
 
-      arr.map((ii) => {
-        const datacollectionRef = collection(db, "MILK");
-        const ref = doc(datacollectionRef, ii);
-        deleteDoc(ref);
-        const filterData = others.filter((item) => item.id === ii);
-        return setMilk(filterData);
-      });
-      alert("Deleted Successfully");
+        arr.map((ii) => {
+          const datacollectionRef = collection(db, "MILK");
+          const ref = doc(datacollectionRef, ii);
+          deleteDoc(ref);
+          const filterData = others.filter((item) => item.id === ii);
+          return setMilk(filterData);
+        });
+        alert("Deleted Successfully");
+      }
     }
   };
 
@@ -324,20 +348,23 @@ const Viewbills = () => {
     if (meat.length === 0) {
       alert("No items to delete");
     } else {
-      const arr = [];
+      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      if (shouldDelete) {
+        const arr = [];
 
-      meat.map((item) => {
-        return arr.push(item.id);
-      });
+        meat.map((item) => {
+          return arr.push(item.id);
+        });
 
-      arr.map((ii) => {
-        const datacollectionRef = collection(db, "MEAT");
-        const ref = doc(datacollectionRef, ii);
-        deleteDoc(ref);
-        const filterData = others.filter((item) => item.id === ii);
-        return setMeat(filterData);
-      });
-      alert("Deleted Successfully");
+        arr.map((ii) => {
+          const datacollectionRef = collection(db, "MEAT");
+          const ref = doc(datacollectionRef, ii);
+          deleteDoc(ref);
+          const filterData = others.filter((item) => item.id === ii);
+          return setMeat(filterData);
+        });
+        alert("Deleted Successfully");
+      }
     }
   };
 
@@ -345,20 +372,23 @@ const Viewbills = () => {
     if (others.length === 0) {
       alert("No items to delete");
     } else {
-      const arr = [];
+      const shouldDelete = window.confirm("Are you sure ,want to delete");
+      if (shouldDelete) {
+        const arr = [];
 
-      others.map((item) => {
-        return arr.push(item.id);
-      });
+        others.map((item) => {
+          return arr.push(item.id);
+        });
 
-      arr.map((ii) => {
-        const datacollectionRef = collection(db, "OTHERS");
-        const ref = doc(datacollectionRef, ii);
-        deleteDoc(ref);
-        const filterData = kirana.filter((item) => item.id === ii);
-        return setOthers(filterData);
-      });
-      alert("Deleted Successfully");
+        arr.map((ii) => {
+          const datacollectionRef = collection(db, "OTHERS");
+          const ref = doc(datacollectionRef, ii);
+          deleteDoc(ref);
+          const filterData = kirana.filter((item) => item.id === ii);
+          return setOthers(filterData);
+        });
+        alert("Deleted Successfully");
+      }
     }
   };
 
@@ -683,17 +713,17 @@ const Viewbills = () => {
 
       <div>
         {buttonStates.kirana ? (
-          <table className="flex flex-col w-[70%]  mx-auto mt-10 text-wrap ">
+          <table className="flex flex-col w-[98%] mx-auto  mt-10 text-wrap ">
             <thead>
               <tr className=" bg-black text-white flex justify-center text-xl font-bold">
                 KIRANA BILLS
               </tr>
               <tr className="flex text-lg bg-gray-400 ">
-                <th className="pl-[90px]  ">Date</th>
-                <th className="px-[290px]  ">Items</th>
-                <th className="w-[20%] ">Amount</th>
+                <th className="w-[30%]  ">Date</th>
+                <th className="w-[60%]  ">Items</th>
+                <th className="w-[19%] ">Amount</th>
                 <th
-                  className="w-[20%] pl-1 bg-red-500 cursor-pointer "
+                  className="w-[19%]  bg-red-500 cursor-pointer "
                   onClick={() => deleteKiranaAll()}
                 >
                   Delete All
@@ -707,20 +737,20 @@ const Viewbills = () => {
                     key={item.id}
                     className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
                   >
-                    <td className=" w-[200px]  py-[30px] text-center  ">
+                    <td className=" w-[30%]  py-[30px] text-center  ">
                       {item.data.date}
                     </td>
-                    <td className="w-[550px]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
+                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
                       {item.data.items}
                     </td>
-                    <td className=" w-[20px] py-[30px]  px-[50px]">
+                    <td className=" w-[19%] py-[30px] text-center ">
                       {item.data.amount}
                     </td>
-                    <td
-                      className=" w-[10%] pl-[50px]  py-[30px] text-2xl "
-                      onClick={() => deletekiranaCell(item.id)}
-                    >
-                      <RiDeleteBin6Fill className="text-red-400 hover:text-red-700" />
+                    <td className=" w-[19%]   py-[30px]  ">
+                      <RiDeleteBin6Fill
+                        className="text-red-400 mx-auto hover:text-red-700"
+                        onClick={() => deletekiranaCell(item.id)}
+                      />
                     </td>
                   </tr>
                 );
@@ -732,17 +762,17 @@ const Viewbills = () => {
         )}
 
         {buttonStates.vegetables ? (
-          <table className="flex flex-col w-[70%]  mx-auto mt-10 text-wrap ">
+          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
             <thead>
               <tr className=" bg-black text-white flex justify-center text-xl font-bold">
                 VEGETABLE BILLS
               </tr>
               <tr className="flex text-lg bg-gray-400 ">
-                <th className="pl-[90px] ">Date</th>
-                <th className="px-[290px]  ">Items</th>
-                <th className="w-[20%] ">Amount</th>
+                <th className="w-[30%]  ">Date</th>
+                <th className="w-[60%]  ">Items</th>
+                <th className="w-[19%] ">Amount</th>
                 <th
-                  className="w-[20%] pl-1 bg-red-500 cursor-pointer "
+                  className="w-[19%]  bg-red-500 cursor-pointer "
                   onClick={() => deleteVegetablesAll()}
                 >
                   Delete All
@@ -756,20 +786,20 @@ const Viewbills = () => {
                     key={item.id}
                     className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
                   >
-                    <td className=" w-[200px]  py-[30px] text-center  ">
+                    <td className=" w-[30%]  py-[30px] text-center  ">
                       {item.data.date}
                     </td>
-                    <td className="w-[550px] text-wrap overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
+                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
                       {item.data.items}
                     </td>
-                    <td className=" w-[20px] py-[30px]  px-[50px]">
+                    <td className=" w-[19%] py-[30px] text-center ">
                       {item.data.amount}
                     </td>
-                    <td
-                      className=" w-[10%] pl-[50px]  py-[30px] text-2xl "
-                      onClick={() => deletevegetablesCell(item.id)}
-                    >
-                      <RiDeleteBin6Fill className="text-red-400 hover:text-red-700" />
+                    <td className=" w-[19%]   py-[30px]  ">
+                      <RiDeleteBin6Fill
+                        className="text-red-400 mx-auto hover:text-red-700"
+                        onClick={() => deletevegetablesCell(item.id)}
+                      />
                     </td>
                   </tr>
                 );
@@ -781,17 +811,17 @@ const Viewbills = () => {
         )}
 
         {buttonStates.milk ? (
-          <table className="flex flex-col w-[70%]  mx-auto mt-10 text-wrap ">
+          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
             <thead>
               <tr className=" bg-black text-white flex justify-center text-xl font-bold">
                 MILK BILLS
               </tr>
               <tr className="flex text-lg bg-gray-400 ">
-                <th className="pl-[90px] ">Date</th>
-                <th className="px-[290px]  ">Items</th>
-                <th className="w-[20%] ">Amount</th>
+                <th className="w-[30%]  ">Date</th>
+                <th className="w-[60%]  ">Items</th>
+                <th className="w-[19%] ">Amount</th>
                 <th
-                  className="w-[20%] pl-1 bg-red-500 cursor-pointer "
+                  className="w-[19%]  bg-red-500 cursor-pointer "
                   onClick={() => deleteMilkAll()}
                 >
                   Delete All
@@ -805,20 +835,20 @@ const Viewbills = () => {
                     key={item.id}
                     className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
                   >
-                    <td className=" w-[200px]  py-[30px] text-center  ">
+                    <td className=" w-[30%]  py-[30px] text-center  ">
                       {item.data.date}
                     </td>
-                    <td className="w-[550px] text-wrap overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
+                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
                       {item.data.items}
                     </td>
-                    <td className=" w-[20px] py-[30px]  px-[50px]">
+                    <td className=" w-[19%] py-[30px] text-center ">
                       {item.data.amount}
                     </td>
-                    <td
-                      className=" w-[10%] pl-[50px]  py-[30px] text-2xl "
-                      onClick={() => deletemilkCell(item.id)}
-                    >
-                      <RiDeleteBin6Fill className="text-red-400 hover:text-red-700" />
+                    <td className=" w-[19%]   py-[30px]  ">
+                      <RiDeleteBin6Fill
+                        className="text-red-400 mx-auto hover:text-red-700"
+                        onClick={() => deletemilkCell(item.id)}
+                      />
                     </td>
                   </tr>
                 );
@@ -830,17 +860,17 @@ const Viewbills = () => {
         )}
 
         {buttonStates.meat ? (
-          <table className="flex flex-col w-[70%]  mx-auto mt-10 text-wrap ">
+          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
             <thead>
               <tr className=" bg-black text-white flex justify-center text-xl font-bold">
                 MEAT BILLS
               </tr>
               <tr className="flex text-lg bg-gray-400 ">
-                <th className="pl-[90px] ">Date</th>
-                <th className="px-[290px]  ">Items</th>
-                <th className="w-[20%] ">Amount</th>
+                <th className="w-[30%]  ">Date</th>
+                <th className="w-[60%]  ">Items</th>
+                <th className="w-[19%] ">Amount</th>
                 <th
-                  className="w-[20%] pl-1 bg-red-500 cursor-pointer "
+                  className="w-[19%]  bg-red-500 cursor-pointer "
                   onClick={() => deleteMeatAll()}
                 >
                   Delete All
@@ -854,20 +884,20 @@ const Viewbills = () => {
                     key={item.id}
                     className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
                   >
-                    <td className=" w-[200px]  py-[30px] text-center  ">
+                    <td className=" w-[30%]  py-[30px] text-center  ">
                       {item.data.date}
                     </td>
-                    <td className="w-[550px] text-wrap overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
+                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
                       {item.data.items}
                     </td>
-                    <td className=" w-[20px] py-[30px]  px-[50px]">
+                    <td className=" w-[19%] py-[30px] text-center ">
                       {item.data.amount}
                     </td>
-                    <td
-                      className=" w-[10%] pl-[50px]  py-[30px] text-2xl "
-                      onClick={() => deletemeatCell(item.id)}
-                    >
-                      <RiDeleteBin6Fill className="text-red-400 hover:text-red-700" />
+                    <td className=" w-[19%]   py-[30px]  ">
+                      <RiDeleteBin6Fill
+                        className="text-red-400 mx-auto hover:text-red-700"
+                        onClick={() => deletemeatCell(item.id)}
+                      />
                     </td>
                   </tr>
                 );
@@ -879,17 +909,17 @@ const Viewbills = () => {
         )}
 
         {buttonStates.others ? (
-          <table className="flex flex-col w-[70%]  mx-auto mt-10 text-wrap ">
+          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
             <thead>
               <tr className=" bg-black text-white flex justify-center text-xl font-bold">
                 OTHER BILLS
               </tr>
               <tr className="flex text-lg bg-gray-400 ">
-                <th className="pl-[90px] ">Date</th>
-                <th className="px-[290px]  ">Items</th>
-                <th className="w-[20%] ">Amount</th>
+                <th className="w-[30%]  ">Date</th>
+                <th className="w-[60%]  ">Items</th>
+                <th className="w-[19%] ">Amount</th>
                 <th
-                  className="w-[20%] pl-1 bg-red-500 cursor-pointer "
+                  className="w-[19%]  bg-red-500 cursor-pointer "
                   onClick={() => deleteOthersAll()}
                 >
                   Delete All
@@ -903,20 +933,20 @@ const Viewbills = () => {
                     key={item.id}
                     className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
                   >
-                    <td className=" w-[200px]  py-[30px] text-center  ">
+                    <td className=" w-[30%]  py-[30px] text-center  ">
                       {item.data.date}
                     </td>
-                    <td className="w-[550px] text-wrap overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
+                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
                       {item.data.items}
                     </td>
-                    <td className=" w-[20px] py-[30px]  px-[50px]">
+                    <td className=" w-[19%] py-[30px] text-center ">
                       {item.data.amount}
                     </td>
-                    <td
-                      className=" w-[10%] pl-[50px]  py-[30px] text-2xl "
-                      onClick={() => deleteothersCell(item.id)}
-                    >
-                      <RiDeleteBin6Fill className="text-red-400 hover:text-red-700" />
+                    <td className=" w-[19%]   py-[30px]  ">
+                      <RiDeleteBin6Fill
+                        className="text-red-400 mx-auto hover:text-red-700"
+                        onClick={() => deleteothersCell(item.id)}
+                      />
                     </td>
                   </tr>
                 );
