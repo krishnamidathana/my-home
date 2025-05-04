@@ -1,5 +1,19 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Firebase cache and config
+.firebase/
+.firebaserc
+
+# Firebase functions (only if using functions and you don't want to track node_modules)
+functions/node_modules
+functions/lib
+functions/.env
+
+# Firebase emulators
+firebase-debug.log
+firebase-debug.*
+
+
 # dependencies
 /node_modules
 /.pnp
