@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useEffect, useState ,useRef } from "react";
 import {
   collection,
   getDocs,
@@ -9,48 +8,41 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import CountUp from "react-countup";
-
-import { useEffect, useState } from "react";
-import { RiDeleteBin6Fill } from "react-icons/ri";
+import { RiDeleteBin6Fill, RiMoneyDollarCircleLine } from "react-icons/ri";
+import { FiShoppingBag, FiCoffee, FiDroplet, FiMeh } from "react-icons/fi";
+import { GiFruitBowl, GiMeat } from "react-icons/gi";
 
 const Viewbills = () => {
+  // State and data fetching logic remains the same
   const [kirana, setKirana] = useState([]);
   const [vegetables, setVegetables] = useState([]);
   const [milk, setMilk] = useState([]);
   const [meat, setMeat] = useState([]);
   const [others, setOthers] = useState([]);
   const [totals, setTotals] = useState({});
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  const [buttonStates, setButtonStates] = useState({
-    kirana: false,
-    vegetables: false,
-    milk: false,
-    meat: false,
-    others: false,
-  });
+  const categoryRefs = useRef({});
 
+  // Add resize listener for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Your existing data fetching and calculation functions
   let kadd, vadd, milkadd, meatadd, othersadd;
-
   var kiranab, vegetablesb, milkb, meatb, othersb;
   let spentTotal, overAllBalance;
 
-  const handleClick = (buttonName) => {
-    const newButtonStates = {
-      kirana: false,
-      vegetables: false,
-      milk: false,
-      meat: false,
-      others: false,
-    };
-    newButtonStates[buttonName] = true;
-    setButtonStates(newButtonStates);
-  };
-
-  //arranging total to display
+  // Fetch totals
   useEffect(() => {
     const getTotals = async () => {
       const datacollectionRef = doc(db, "TOTALS", "gr27oRxD0MX7MLeX44cx");
-
       const totalsData = await getDoc(datacollectionRef);
       const {
         kiranaAmount,
@@ -72,51 +64,68 @@ const Viewbills = () => {
     getTotals();
   }, []);
 
-  //kirana total function
+    // Function to scroll to category
+    const scrollToCategory = (categoryId) => {
+      setActiveCategory(activeCategory === categoryId ? null : categoryId);
+      
+      if (categoryRefs.current[categoryId]) {
+        const container = document.querySelector('.categories-container');
+        const categoryElement = categoryRefs.current[categoryId];
+        
+        if (container && categoryElement) {
+          const containerWidth = container.offsetWidth;
+          const categoryLeft = categoryElement.offsetLeft;
+          const categoryWidth = categoryElement.offsetWidth;
+          
+          container.scrollTo({
+            left: categoryLeft - (containerWidth / 2) + (categoryWidth / 2),
+            behavior: 'smooth'
+          });
+        }
+      }
+    };
+
+  // Kirana calculations
   const adds = () => {
     kadd = kirana.reduce((accumulator, item) => {
       return accumulator + parseInt(item.data.amount);
     }, 0);
   };
-
   adds();
-  //veg total function
+
+  // Vegetables calculations
   const vegadds = () => {
     vadd = vegetables.reduce((accumulator, item) => {
       return accumulator + parseInt(item.data.amount);
     }, 0);
   };
-
   vegadds();
 
-  //milk total function
+  // Milk calculations
   const milkadds = () => {
     milkadd = milk.reduce((accumulator, item) => {
       return accumulator + parseInt(item.data.amount);
     }, 0);
   };
-
   milkadds();
 
-  //meat total function
+  // Meat calculations
   const meatadds = () => {
     meatadd = meat.reduce((accumulator, item) => {
       return accumulator + parseInt(item.data.amount);
     }, 0);
   };
-
   meatadds();
 
-  //others total function
+  // Others calculations
   const othersadds = () => {
     othersadd = others.reduce((accumulator, item) => {
       return accumulator + parseInt(item.data.amount);
     }, 0);
   };
-
   othersadds();
 
-  // all sub items bal counting
+  // All sub items balance counting
   const allAdds = () => {
     kiranab = totals.kiranaAmount - kadd || 0;
     vegetablesb = totals.vegatablesAmount - vadd || 0;
@@ -126,847 +135,501 @@ const Viewbills = () => {
   };
   allAdds();
 
-  //overall ball counting
-
+  // Overall balance counting
   const spentAmountTotal = () => {
     spentTotal = kadd + vadd + milkadd + meatadd + othersadd;
-
     overAllBalance = totals.addOverAllAmount - spentTotal;
   };
   spentAmountTotal();
 
+  // Fetch Kirana data
   useEffect(() => {
     const datacollectionRef = collection(db, "KIRANA");
-
     const getKirana = async () => {
       const data = await getDocs(datacollectionRef);
       setKirana(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-
     getKirana();
   }, []);
 
+  // Fetch Vegetables data
   useEffect(() => {
     const datacollectionRef = collection(db, "VEGETABLES");
-
     const getVegetables = async () => {
       const data = await getDocs(datacollectionRef);
       setVegetables(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-
     getVegetables();
   }, []);
 
+  // Fetch Milk data
   useEffect(() => {
     const datacollectionRef = collection(db, "MILK");
-
     const getCollection = async () => {
       const data = await getDocs(datacollectionRef);
       setMilk(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-
     getCollection();
   }, []);
 
+  // Fetch Meat data
   useEffect(() => {
     const datacollectionRef = collection(db, "MEAT");
-
     const getCollection = async () => {
       const data = await getDocs(datacollectionRef);
       setMeat(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-
     getCollection();
   }, []);
 
+  // Fetch Others data
   useEffect(() => {
     const datacollectionRef = collection(db, "OTHERS");
-
     const getCollection = async () => {
       const data = await getDocs(datacollectionRef);
       setOthers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-
     getCollection();
   }, []);
 
+  // Delete individual items
   const deletekiranaCell = async (deleteId) => {
-    const shouldDelete = window.confirm("Are you sure , want to delete?");
-    try {
-      if (shouldDelete) {
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      try {
         const datacollectionRef = collection(db, "KIRANA");
         const ref = doc(datacollectionRef, deleteId);
         await deleteDoc(ref);
-        const kiranaFilterData = kirana.filter((item) => item.id !== deleteId);
-        setKirana(kiranaFilterData);
-        alert("Deleted Successfully");
+        setKirana(kirana.filter((item) => item.id !== deleteId));
+        alert("Deleted successfully");
+      } catch (error) {
+        alert("Error deleting item");
       }
-    } catch (error) {
-      alert("an error occured");
     }
   };
 
   const deletevegetablesCell = async (deleteId) => {
-    const shouldDelete = window.confirm("Are you sure , want to delete?");
-    try {
-      if (shouldDelete) {
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      try {
         const datacollectionRef = collection(db, "VEGETABLES");
         const ref = doc(datacollectionRef, deleteId);
         await deleteDoc(ref);
-        const vegetablesFilterData = vegetables.filter(
-          (item) => item.id !== deleteId
-        );
-        setVegetables(vegetablesFilterData);
-        alert("Deleted Successfully");
+        setVegetables(vegetables.filter((item) => item.id !== deleteId));
+        alert("Deleted successfully");
+      } catch (error) {
+        alert("Error deleting item");
       }
-    } catch (error) {
-      alert("an error occured");
     }
   };
 
   const deletemilkCell = async (deleteId) => {
-    const shouldDelete = window.confirm("Are you sure , want to delete ?");
-    try {
-      if (shouldDelete) {
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      try {
         const datacollectionRef = collection(db, "MILK");
         const ref = doc(datacollectionRef, deleteId);
         await deleteDoc(ref);
-        const milkFilterData = milk.filter((item) => item.id !== deleteId);
-        setMilk(milkFilterData);
-        alert("Deleted Successfully");
+        setMilk(milk.filter((item) => item.id !== deleteId));
+        alert("Deleted successfully");
+      } catch (error) {
+        alert("Error deleting item");
       }
-    } catch (error) {
-      alert("an error occured");
     }
   };
 
   const deletemeatCell = async (deleteId) => {
-    const shouldDelete = window.confirm("Are you sure ,u want to delete ?");
-    try {
-      if (shouldDelete) {
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      try {
         const datacollectionRef = collection(db, "MEAT");
         const ref = doc(datacollectionRef, deleteId);
         await deleteDoc(ref);
-        const meatFilterData = meat.filter((item) => item.id !== deleteId);
-        setMeat(meatFilterData);
-        alert("Deleted Successfully");
+        setMeat(meat.filter((item) => item.id !== deleteId));
+        alert("Deleted successfully");
+      } catch (error) {
+        alert("Error deleting item");
       }
-    } catch (error) {
-      alert("an error occured");
     }
   };
 
   const deleteothersCell = async (deleteId) => {
-    const shouldDelete = window.confirm("Are you sure , want to delete ?");
-    try {
-      if (shouldDelete) {
+    const shouldDelete = window.confirm("Are you sure you want to delete?");
+    if (shouldDelete) {
+      try {
         const datacollectionRef = collection(db, "OTHERS");
         const ref = doc(datacollectionRef, deleteId);
         await deleteDoc(ref);
-        const othersFilterData = others.filter((item) => item.id !== deleteId);
-        setOthers(othersFilterData);
-        alert("Deleted Successfully");
+        setOthers(others.filter((item) => item.id !== deleteId));
+        alert("Deleted successfully");
+      } catch (error) {
+        alert("Error deleting item");
       }
-    } catch (error) {
-      alert("an error occured");
     }
   };
 
-  const deleteKiranaAll = () => {
+  // Delete all items in a category
+  const deleteKiranaAll = async () => {
     if (kirana.length === 0) {
       alert("No items to delete");
-    } else {
-      const shouldDelete = window.confirm(
-        "Are you sure ,want to delete all items?"
-      );
-      if (shouldDelete) {
-        const arr = [];
-
-        kirana.map((item) => {
-          return arr.push(item.id);
-        });
-
-        arr.map((ii) => {
-          const datacollectionRef = collection(db, "KIRANA");
-          const ref = doc(datacollectionRef, ii);
-          deleteDoc(ref);
-          const filterData = others.filter((item) => item.id === ii);
-          return setKirana(filterData);
-        });
-        alert("Deleted Successfully");
+      return;
+    }
+    
+    const shouldDelete = window.confirm("Are you sure you want to delete ALL kirana items?");
+    if (shouldDelete) {
+      try {
+        const batch = kirana.map(item => 
+          deleteDoc(doc(db, "KIRANA", item.id))
+        );
+        await Promise.all(batch);
+        setKirana([]);
+        alert("All kirana items deleted successfully");
+      } catch (error) {
+        alert("Error deleting items");
       }
     }
   };
 
-  const deleteVegetablesAll = () => {
+  const deleteVegetablesAll = async () => {
     if (vegetables.length === 0) {
       alert("No items to delete");
-    } else {
-      const shouldDelete = window.confirm(
-        "Are you sure ,want to delete all items?"
-      );
-      if (shouldDelete) {
-        const arr = [];
-
-        vegetables.map((item) => {
-          return arr.push(item.id);
-        });
-
-        arr.map((ii) => {
-          const datacollectionRef = collection(db, "VEGETABLES");
-          const ref = doc(datacollectionRef, ii);
-          deleteDoc(ref);
-          const filterData = others.filter((item) => item.id === ii);
-          return setVegetables(filterData);
-        });
-        alert("Deleted Successfully");
+      return;
+    }
+    
+    const shouldDelete = window.confirm("Are you sure you want to delete ALL vegetable items?");
+    if (shouldDelete) {
+      try {
+        const batch = vegetables.map(item => 
+          deleteDoc(doc(db, "VEGETABLES", item.id))
+        );
+        await Promise.all(batch);
+        setVegetables([]);
+        alert("All vegetable items deleted successfully");
+      } catch (error) {
+        alert("Error deleting items");
       }
     }
   };
 
-  const deleteMilkAll = () => {
+  const deleteMilkAll = async () => {
     if (milk.length === 0) {
       alert("No items to delete");
-    } else {
-      const shouldDelete = window.confirm(
-        "Are you sure ,want to delete all items?"
-      );
-      if (shouldDelete) {
-        const arr = [];
-
-        milk.map((item) => {
-          return arr.push(item.id);
-        });
-
-        arr.map((ii) => {
-          const datacollectionRef = collection(db, "MILK");
-          const ref = doc(datacollectionRef, ii);
-          deleteDoc(ref);
-          const filterData = others.filter((item) => item.id === ii);
-          return setMilk(filterData);
-        });
-        alert("Deleted Successfully");
+      return;
+    }
+    
+    const shouldDelete = window.confirm("Are you sure you want to delete ALL milk items?");
+    if (shouldDelete) {
+      try {
+        const batch = milk.map(item => 
+          deleteDoc(doc(db, "MILK", item.id))
+        );
+        await Promise.all(batch);
+        setMilk([]);
+        alert("All milk items deleted successfully");
+      } catch (error) {
+        alert("Error deleting items");
       }
     }
   };
 
-  const deleteMeatAll = () => {
+  const deleteMeatAll = async () => {
     if (meat.length === 0) {
       alert("No items to delete");
-    } else {
-      const shouldDelete = window.confirm(
-        "Are you sure ,want to delete all items?"
-      );
-      if (shouldDelete) {
-        const arr = [];
-
-        meat.map((item) => {
-          return arr.push(item.id);
-        });
-
-        arr.map((ii) => {
-          const datacollectionRef = collection(db, "MEAT");
-          const ref = doc(datacollectionRef, ii);
-          deleteDoc(ref);
-          const filterData = others.filter((item) => item.id === ii);
-          return setMeat(filterData);
-        });
-        alert("Deleted Successfully");
+      return;
+    }
+    
+    const shouldDelete = window.confirm("Are you sure you want to delete ALL meat items?");
+    if (shouldDelete) {
+      try {
+        const batch = meat.map(item => 
+          deleteDoc(doc(db, "MEAT", item.id))
+        );
+        await Promise.all(batch);
+        setMeat([]);
+        alert("All meat items deleted successfully");
+      } catch (error) {
+        alert("Error deleting items");
       }
     }
   };
 
-  const deleteOthersAll = () => {
+  const deleteOthersAll = async () => {
     if (others.length === 0) {
       alert("No items to delete");
-    } else {
-      const shouldDelete = window.confirm(
-        "Are you sure ,want to delete all items?"
-      );
-      if (shouldDelete) {
-        const arr = [];
-
-        others.map((item) => {
-          return arr.push(item.id);
-        });
-
-        arr.map((ii) => {
-          const datacollectionRef = collection(db, "OTHERS");
-          const ref = doc(datacollectionRef, ii);
-          deleteDoc(ref);
-          const filterData = kirana.filter((item) => item.id === ii);
-          return setOthers(filterData);
-        });
-        alert("Deleted Successfully");
+      return;
+    }
+    
+    const shouldDelete = window.confirm("Are you sure you want to delete ALL other items?");
+    if (shouldDelete) {
+      try {
+        const batch = others.map(item => 
+          deleteDoc(doc(db, "OTHERS", item.id))
+        );
+        await Promise.all(batch);
+        setOthers([]);
+        alert("All other items deleted successfully");
+      } catch (error) {
+        alert("Error deleting items");
       }
     }
   };
 
+  // Enhanced Category data with estimate and spent values
+  const categories = [
+    {
+      id: "kirana",
+      name: "Kirana",
+      icon: <FiShoppingBag className="text-amber-500" size={24} />,
+      color: "bg-amber-100",
+      textColor: "text-amber-800",
+      estimate: totals.kiranaAmount || 0,
+      spent: kadd || 0,
+      balance: kiranab || 0
+    },
+    {
+      id: "vegetables",
+      name: "Vegetables",
+      icon: <GiFruitBowl className="text-emerald-500" size={24} />,
+      color: "bg-emerald-100",
+      textColor: "text-emerald-800",
+      estimate: totals.vegatablesAmount || 0,
+      spent: vadd || 0,
+      balance: vegetablesb || 0
+    },
+    {
+      id: "milk",
+      name: "Milk",
+      icon: <FiDroplet className="text-blue-500" size={24} />,
+      color: "bg-blue-100",
+      textColor: "text-blue-800",
+      estimate: totals.milkAmount || 0,
+      spent: milkadd || 0,
+      balance: milkb || 0
+    },
+    {
+      id: "meat",
+      name: "Meat",
+      icon: <GiMeat className="text-red-500" size={24} />,
+      color: "bg-red-100",
+      textColor: "text-red-800",
+      estimate: totals.meatAmount || 0,
+      spent: meatadd || 0,
+      balance: meatb || 0
+    },
+    {
+      id: "others",
+      name: "Others",
+      icon: <FiMeh className="text-purple-500" size={24} />,
+      color: "bg-purple-100",
+      textColor: "text-purple-800",
+      estimate: totals.otherBills || 0,
+      spent: othersadd || 0,
+      balance: othersb || 0
+    }
+  ];
+
   return (
-    <div className="bg-black pb-[100px]">
-      <div className="h-[1300px]  bg-black">
-        {/* card display */}
-        <div className="flex flex-row gap-[80px] justify-center pb-[100px] pt-[140px]">
-          <div className="w-[350px] p-1 h-[150px] bg-yellow-300 font-bold text-xl rounded-xl shadow-2xl shadow-yellow-300/50">
-            <h1 className="pt-[40px] text-[50px] font-medium">
-              <CountUp
-                end={totals.addOverAllAmount || 0}
-                start={0}
-                duration={2.75}
-                prefix="₹"
-              />
-            </h1>
-            <h1 className="pt-[30px] font-bold">TOTAL ESTIMATE AMOUNT</h1>
-          </div>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8 pb-20">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mt-12">Expense Tracker</h1>
+        <p className="text-gray-600 ">View and manage your bills</p>
+      </div>
 
-          <div className="w-[350px] p-1 h-[150px] bg-cyan-300 font-bold text-xl rounded-xl shadow-2xl shadow-cyan-300/50">
-            <h1 className="pt-[40px] text-[50px] font-medium">
-              <CountUp
-                end={spentTotal || 0}
-                start={0}
-                duration={2.75}
-                prefix="₹"
-              />
-            </h1>
-            <h1 className="pt-[30px] font-bold">TOTAL SPENT AMOUNT</h1>
-          </div>
-
-          <div className="w-[350px] p-1 h-[150px] bg-green-300 font-bold text-xl rounded-xl shadow-2xl shadow-green-300/50">
-            <h1 className="pt-[40px] text-[50px] font-medium">
-              <CountUp
-                end={overAllBalance || 0}
-                start={0}
-                duration={2.75}
-                prefix="₹"
-              />
-            </h1>
-            <h1 className="pt-[30px] font-bold">TOTAL BALANCE AMOUNT</h1>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Total Estimate */}
+        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-500 font-medium">Total Estimate</p>
+              <h2 className="text-3xl font-bold text-gray-800">
+                <CountUp
+                  end={totals.addOverAllAmount || 0}
+                  start={0}
+                  duration={2.75}
+                  prefix="₹"
+                />
+              </h2>
+            </div>
+            <RiMoneyDollarCircleLine className="text-blue-500" size={32} />
           </div>
         </div>
-        {/* small cards */}
-        <div className="flex flex-col gap-[80px] justify-center pb-[100px]">
-          <div className="flex flex-row gap-[80px] justify-center pb-[50px]">
-            <div className="flex flex-col  p-[10px] bg-red-300 w-[400px] h-[180px]  rounded-xl shadow-2xl shadow-red-300/50">
-              <div className="flex flex-row justify-between  ">
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={totals.kiranaAmount || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">ESTIMATE</h1>
-                </div>
 
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={kadd || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">TOTAL SPENT </h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={kiranab || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">BALANCE </h1>
-                </div>
-              </div>
-              <div className="text-center font-bold text-lg pt-[20px]">
-                KIRANA
-              </div>
+        {/* Total Spent */}
+        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-500 font-medium">Total Spent</p>
+              <h2 className="text-3xl font-bold text-gray-800">
+                <CountUp
+                  end={spentTotal || 0}
+                  start={0}
+                  duration={2.75}
+                  prefix="₹"
+                />
+              </h2>
             </div>
-
-            <div className="flex flex-col  p-[10px] bg-violet-500 w-[400px] h-[180px]  rounded-xl shadow-2xl shadow-violet-300/50">
-              <div className="flex flex-row justify-between  ">
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={totals.vegatablesAmount || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">ESTIMATE</h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={vadd || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">TOTAL SPENT </h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={vegetablesb || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">BALANCE </h1>
-                </div>
-              </div>
-              <div className="text-center font-bold text-lg pt-[20px]">
-                VEGETABLES
-              </div>
-            </div>
+            <FiShoppingBag className="text-green-500" size={32} />
           </div>
+        </div>
 
-          <div className="flex flex-row gap-[80px] justify-center pb-[50px]">
-            <div className="flex flex-col  p-[10px] bg-yellow-300 w-[400px] h-[180px]  rounded-xl shadow-2xl shadow-yellow-300/50">
-              <div className="flex flex-row justify-between  ">
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={totals.milkAmount || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">ESTIMATE</h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={milkadd || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">TOTAL SPENT </h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={milkb || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">BALANCE </h1>
-                </div>
-              </div>
-              <div className="text-center font-bold text-lg pt-[20px]">
-                MILK
-              </div>
+        {/* Total Balance */}
+        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-amber-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-500 font-medium">Total Balance</p>
+              <h2 className="text-3xl font-bold text-gray-800">
+                <CountUp
+                  end={overAllBalance || 0}
+                  start={0}
+                  duration={2.75}
+                  prefix="₹"
+                />
+              </h2>
             </div>
-
-            <div className="flex flex-col  p-[10px] bg-cyan-500 w-[400px] h-[180px]  rounded-xl shadow-2xl shadow-cyan-300/50">
-              <div className="flex flex-row justify-between  ">
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={totals.meatAmount || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">ESTIMATE</h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={meatadd || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">TOTAL SPENT </h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={meatb || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">BALANCE </h1>
-                </div>
-              </div>
-              <div className="text-center font-bold text-lg pt-[20px]">
-                MEAT
-              </div>
-            </div>
-          </div>
-
-          <div className=" flex justify-center">
-            <div className="flex flex-col justify-center  p-[10px] bg-blue-500 w-[400px] h-[180px]  rounded-xl shadow-2xl shadow-cyan-300/50">
-              <div className="flex flex-row justify-between  ">
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={totals.otherBills || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">ESTIMATE</h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={othersadd || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">TOTAL SPENT </h1>
-                </div>
-
-                <div>
-                  <h1 className="pt-[20px] font-bold text-[30px]">
-                    <CountUp
-                      end={othersb || 0}
-                      start={0}
-                      duration={2.75}
-                      prefix="₹"
-                    />
-                  </h1>
-                  <h1 className="pt-[30px] font-bold">BALANCE </h1>
-                </div>
-              </div>
-              <div className="text-center font-bold text-lg pt-[20px]">
-                OTHERS
-              </div>
-            </div>
+            <FiCoffee className="text-amber-500" size={32} />
           </div>
         </div>
       </div>
 
-      <div id="viewbills" className="flex flex-row gap-[80px] justify-center">
-        <button
-          className={
-            buttonStates.kirana
-              ? "px-4 py-2 bg-orange-400 rounded-lg text-xl font-bold"
-              : "px-4 py-2 bg-green-400 rounded-lg text-xl font-bold"
-          }
-          onClick={() => handleClick("kirana")}
-        >
-          Kirana Bills
-        </button>
-        <button
-          className={
-            buttonStates.vegetables
-              ? "px-4 py-2 bg-orange-400 rounded-lg text-xl font-bold"
-              : "px-4 py-2 bg-green-400 rounded-lg text-xl font-bold"
-          }
-          onClick={() => handleClick("vegetables")}
-        >
-          Vegetables Bills
-        </button>
-        <button
-          className={
-            buttonStates.milk
-              ? "px-4 py-2 bg-orange-400 rounded-lg text-xl font-bold"
-              : "px-4 py-2 bg-green-400 rounded-lg text-xl font-bold"
-          }
-          onClick={() => handleClick("milk")}
-        >
-          Milk Bills
-        </button>
-        <button
-          className={
-            buttonStates.meat
-              ? "px-4 py-2 bg-orange-400 rounded-lg text-xl font-bold"
-              : "px-4 py-2 bg-green-400 rounded-lg text-xl font-bold"
-          }
-          onClick={() => handleClick("meat")}
-        >
-          Meat Bills
-        </button>
-        <button
-          className={
-            buttonStates.others
-              ? "px-4 py-2 bg-orange-400 rounded-lg text-xl font-bold"
-              : "px-4 py-2 bg-green-400 rounded-lg text-xl font-bold"
-          }
-          onClick={() => handleClick("others")}
-        >
-          Others Bills
-        </button>
+      {/* Category Breakdown with Estimate, Spent, and Balance */}
+      <div className="mb-8 overflow-x-auto categories-container">
+      <div className="flex space-x-4 pb-2" style={{ minWidth: isMobile ? '600px' : 'auto' }}>
+        {categories.map((category) => (
+          <div 
+            key={category.id}
+            ref={el => categoryRefs.current[category.id] = el}
+            className={`flex-1 min-w-[220px] rounded-xl p-4 cursor-pointer transition-all ${category.color} ${activeCategory === category.id ? 'ring-2 ring-offset-2 ring-gray-400' : ''}`}
+            onClick={() => {
+              setActiveCategory(activeCategory === category.id ? null : category.id);
+              scrollToCategory(category.id);
+            }}
+          >
+            <div className="flex items-center space-x-3 mb-3">
+              {category.icon}
+              <h3 className={`font-bold ${category.textColor}`}>{category.name}</h3>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Estimate</span>
+                <span className="font-semibold">
+                  ₹<CountUp end={category.estimate} duration={1} />
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Spent</span>
+                <span className="font-semibold">
+                  ₹<CountUp end={category.spent} duration={1} />
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Balance</span>
+                <span className="font-semibold">
+                  ₹<CountUp end={category.balance} duration={1} />
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
+    </div>
 
-      <div>
-        {buttonStates.kirana ? (
-          <table className="flex flex-col w-[98%] mx-auto  mt-10 text-wrap ">
-            <thead>
-              <tr className=" bg-black text-white flex justify-center text-xl font-bold">
-                KIRANA BILLS
-              </tr>
-              <tr className="flex text-lg bg-gray-400 ">
-                <th className="w-[30%]  ">Date</th>
-                <th className="w-[60%]  ">Items</th>
-                <th className="w-[19%] ">Amount</th>
-                <th
-                  className="w-[19%]  bg-red-500 cursor-pointer "
-                  onClick={() => deleteKiranaAll()}
-                >
-                  Delete All
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-200 text-black ">
-              {kirana.map((item) => {
-                return (
-                  <tr
-                    key={item.id}
-                    className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
-                  >
-                    <td className=" w-[30%]  py-[30px] text-center  ">
-                      {item.data.date}
-                    </td>
-                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
-                      {item.data.items}
-                    </td>
-                    <td className=" w-[19%] py-[30px] text-center ">
-                      {item.data.amount}
-                    </td>
-                    <td className=" w-[19%]   py-[30px]  ">
-                      <RiDeleteBin6Fill
-                        className="text-red-400 mx-auto hover:text-red-700"
-                        onClick={() => deletekiranaCell(item.id)}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          ""
-        )}
 
-        {buttonStates.vegetables ? (
-          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
-            <thead>
-              <tr className=" bg-black text-white flex justify-center text-xl font-bold">
-                VEGETABLE BILLS
-              </tr>
-              <tr className="flex text-lg bg-gray-400 ">
-                <th className="w-[30%]  ">Date</th>
-                <th className="w-[60%]  ">Items</th>
-                <th className="w-[19%] ">Amount</th>
-                <th
-                  className="w-[19%]  bg-red-500 cursor-pointer "
-                  onClick={() => deleteVegetablesAll()}
-                >
-                  Delete All
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-200 text-black ">
-              {vegetables.map((item) => {
-                return (
-                  <tr
-                    key={item.id}
-                    className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
-                  >
-                    <td className=" w-[30%]  py-[30px] text-center  ">
-                      {item.data.date}
-                    </td>
-                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
-                      {item.data.items}
-                    </td>
-                    <td className=" w-[19%] py-[30px] text-center ">
-                      {item.data.amount}
-                    </td>
-                    <td className=" w-[19%]   py-[30px]  ">
-                      <RiDeleteBin6Fill
-                        className="text-red-400 mx-auto hover:text-red-700"
-                        onClick={() => deletevegetablesCell(item.id)}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          ""
-        )}
+      {/* Category Details Section */}
+      {activeCategory && (
 
-        {buttonStates.milk ? (
-          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
-            <thead>
-              <tr className=" bg-black text-white flex justify-center text-xl font-bold">
-                MILK BILLS
-              </tr>
-              <tr className="flex text-lg bg-gray-400 ">
-                <th className="w-[30%]  ">Date</th>
-                <th className="w-[60%]  ">Items</th>
-                <th className="w-[19%] ">Amount</th>
-                <th
-                  className="w-[19%]  bg-red-500 cursor-pointer "
-                  onClick={() => deleteMilkAll()}
-                >
-                  Delete All
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-200 text-black ">
-              {milk.map((item) => {
-                return (
-                  <tr
-                    key={item.id}
-                    className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
-                  >
-                    <td className=" w-[30%]  py-[30px] text-center  ">
-                      {item.data.date}
-                    </td>
-                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
-                      {item.data.items}
-                    </td>
-                    <td className=" w-[19%] py-[30px] text-center ">
-                      {item.data.amount}
-                    </td>
-                    <td className=" w-[19%]   py-[30px]  ">
-                      <RiDeleteBin6Fill
-                        className="text-red-400 mx-auto hover:text-red-700"
-                        onClick={() => deletemilkCell(item.id)}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          ""
-        )}
+        
+        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+          <div className={`p-4 ${categories.find(c => c.id === activeCategory)?.color} flex justify-between items-center`}>
+            <div className="flex items-center space-x-3">
+              {categories.find(c => c.id === activeCategory)?.icon}
+              <h2 className="text-xl font-bold">
+                {categories.find(c => c.id === activeCategory)?.name} Bills
+               
+              </h2>
+            </div>
+            <button 
+              onClick={() => {
+                if (activeCategory === 'kirana') deleteKiranaAll();
+                if (activeCategory === 'vegetables') deleteVegetablesAll();
+                if (activeCategory === 'milk') deleteMilkAll();
+                if (activeCategory === 'meat') deleteMeatAll();
+                if (activeCategory === 'others') deleteOthersAll();
+              }}
+              className="px-3 py-1 bg-white rounded-lg text-sm font-medium text-red-500 hover:bg-red-50"
+            >
+              Clear All
+            </button>
+          </div>
 
-        {buttonStates.meat ? (
-          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
-            <thead>
-              <tr className=" bg-black text-white flex justify-center text-xl font-bold">
-                MEAT BILLS
-              </tr>
-              <tr className="flex text-lg bg-gray-400 ">
-                <th className="w-[30%]  ">Date</th>
-                <th className="w-[60%]  ">Items</th>
-                <th className="w-[19%] ">Amount</th>
-                <th
-                  className="w-[19%]  bg-red-500 cursor-pointer "
-                  onClick={() => deleteMeatAll()}
-                >
-                  Delete All
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-200 text-black ">
-              {meat.map((item) => {
-                return (
-                  <tr
-                    key={item.id}
-                    className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
-                  >
-                    <td className=" w-[30%]  py-[30px] text-center  ">
-                      {item.data.date}
-                    </td>
-                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
-                      {item.data.items}
-                    </td>
-                    <td className=" w-[19%] py-[30px] text-center ">
-                      {item.data.amount}
-                    </td>
-                    <td className=" w-[19%]   py-[30px]  ">
-                      <RiDeleteBin6Fill
-                        className="text-red-400 mx-auto hover:text-red-700"
-                        onClick={() => deletemeatCell(item.id)}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          ""
-        )}
+          {/* Bill items list */}
+          <div className="divide-y divide-gray-200">
+            {(activeCategory === 'kirana' ? kirana :
+              activeCategory === 'vegetables' ? vegetables :
+              activeCategory === 'milk' ? milk :
+              activeCategory === 'meat' ? meat :
+              others).map((item) => (
+              <div key={item.id} className="p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium text-gray-800">{item.data.date}</p>
+                    <p className="text-gray-600 mt-1">{item.data.items}</p>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <span className="font-bold">₹{item.data.amount}</span>
+                    <button 
+                      onClick={() => {
+                        if (activeCategory === 'kirana') deletekiranaCell(item.id);
+                        if (activeCategory === 'vegetables') deletevegetablesCell(item.id);
+                        if (activeCategory === 'milk') deletemilkCell(item.id);
+                        if (activeCategory === 'meat') deletemeatCell(item.id);
+                        if (activeCategory === 'others') deleteothersCell(item.id);
+                      }}
+                      className="text-red-400 hover:text-red-600"
+                    >
+                      <RiDeleteBin6Fill size={20} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {buttonStates.others ? (
-          <table className="flex flex-col w-[98%]  mx-auto mt-10 text-wrap ">
-            <thead>
-              <tr className=" bg-black text-white flex justify-center text-xl font-bold">
-                OTHER BILLS
-              </tr>
-              <tr className="flex text-lg bg-gray-400 ">
-                <th className="w-[30%]  ">Date</th>
-                <th className="w-[60%]  ">Items</th>
-                <th className="w-[19%] ">Amount</th>
-                <th
-                  className="w-[19%]  bg-red-500 cursor-pointer "
-                  onClick={() => deleteOthersAll()}
-                >
-                  Delete All
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-200 text-black ">
-              {others.map((item) => {
-                return (
-                  <tr
-                    key={item.id}
-                    className=" text-[15px] text-start font-bold flex text-xl  border-b-2 border-black "
-                  >
-                    <td className=" w-[30%]  py-[30px] text-center  ">
-                      {item.data.date}
-                    </td>
-                    <td className="w-[60%]  overflow-hidden py-[10px] pl-[20px] pr-[140px]   ">
-                      {item.data.items}
-                    </td>
-                    <td className=" w-[19%] py-[30px] text-center ">
-                      {item.data.amount}
-                    </td>
-                    <td className=" w-[19%]   py-[30px]  ">
-                      <RiDeleteBin6Fill
-                        className="text-red-400 mx-auto hover:text-red-700"
-                        onClick={() => deleteothersCell(item.id)}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          " "
-        )}
+          {/* Empty state */}
+          {((activeCategory === 'kirana' && kirana.length === 0) ||
+            (activeCategory === 'vegetables' && vegetables.length === 0) ||
+            (activeCategory === 'milk' && milk.length === 0) ||
+            (activeCategory === 'meat' && meat.length === 0) ||
+            (activeCategory === 'others' && others.length === 0)) && (
+            <div className="p-8 text-center text-gray-500">
+              No bills found for this category
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Mobile Navigation */}
+
+  {isMobile && (
+    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-2">
+      <div className="flex justify-around">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            className={`flex flex-col items-center p-2 rounded-lg ${activeCategory === category.id ? category.color : ''}`}
+            onClick={() => scrollToCategory(category.id)}
+          >
+            {React.cloneElement(category.icon, { size: 20 })}
+            <span className="text-xs mt-1">{category.name}</span>
+          </button>
+        ))}
       </div>
+    </div>
+  )}
     </div>
   );
 };
